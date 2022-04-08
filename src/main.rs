@@ -57,7 +57,7 @@ fn load_assets(
     assets: Res<AssetServer>,
     mut texture_atlases: ResMut<Assets<TextureAtlas>>
     ){
-    let image = assets.load("Ascii.png");
+    let image = assets.load("code_page.png");
     let atlas = TextureAtlas::from_grid_with_padding(
         image,
         Vec2::splat(9.),
