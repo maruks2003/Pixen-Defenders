@@ -1,4 +1,8 @@
-use bevy::{prelude::*, render::camera::ScalingMode};
+use bevy::{
+    prelude::*,
+    render::camera::ScalingMode
+};
+
 
 mod player;
 mod debug;
@@ -56,7 +60,7 @@ fn load_assets(
     mut commands: Commands,
     assets: Res<AssetServer>,
     mut texture_atlases: ResMut<Assets<TextureAtlas>>
-    ){
+) {
     let image = assets.load("code_page.png");
     let atlas = TextureAtlas::from_grid_with_padding(
         image,
@@ -64,7 +68,7 @@ fn load_assets(
         16,
         16,
         Vec2::splat(2.)
-        );
+    );
 
     let atlas_handle = texture_atlases.add(atlas);
 
