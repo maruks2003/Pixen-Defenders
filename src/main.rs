@@ -2,6 +2,7 @@ use bevy::{prelude::*, render::camera::ScalingMode};
 
 mod player;
 mod debug;
+mod grid;
 
 use player::PlayerPlugin;
 use debug::DebugPlugin;
@@ -56,13 +57,13 @@ fn load_assets(
     assets: Res<AssetServer>,
     mut texture_atlases: ResMut<Assets<TextureAtlas>>
     ){
-    let image = assets.load("placeholder.png");
+    let image = assets.load("Ascii.png");
     let atlas = TextureAtlas::from_grid_with_padding(
         image,
-        Vec2::splat(TILE_SIZE),
-        1,
-        1,
-        Vec2::splat(0.)
+        Vec2::splat(9.),
+        16,
+        16,
+        Vec2::splat(2.)
         );
 
     let atlas_handle = texture_atlases.add(atlas);

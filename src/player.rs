@@ -40,7 +40,7 @@ fn player_movement(
 }
 
 fn spawn_player(mut commands: Commands, ascii: Res<AsciiSheet>){
-    let mut sprite = TextureAtlasSprite::new(0);
+    let mut sprite = TextureAtlasSprite::new(1);
     sprite.color = Color::rgb(0.3 ,0.3 ,0.9 );
     sprite.custom_size = Some(Vec2::splat(TILE_SIZE));
 
