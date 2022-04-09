@@ -13,7 +13,8 @@ pub struct Player;
 
 impl Plugin for PlayerPlugin {
     fn build(&self, app: &mut App) {
-        app.add_startup_system(spawn_player);
+        app.add_startup_system(spawn_player)
+            .add_system(player_movement);
     }
 }
 
@@ -48,4 +49,28 @@ fn spawn_player(mut commands: Commands, texture_atlas: Res<PlaceholderPlayer>) {
 
     // Push it into commands
     commands.entity(player);
+}
+
+/// System that handle's the player's movement
+fn player_movement(
+    mut player: Query<(&Player, &mut Transform)>,
+    input: Res<Input<KeyCode>>,
+    time: Res<Time>
+) {
+    // Get the player entity and its `transform`
+    let (_, mut transform) = player.single_mut();
+
+    // XXX:
+    //   * Input settings are fixed -> WASD
+    //   * Movement is fixed and not based on anything
+    let movement = 100. * time.delta_seconds();
+
+    // Up
+    if input.pressed(KeyCode::W) { transform.translation.y += movement; }
+    // Down
+    if input.pressed(KeyCode::S) { transform.translation.y -= movement; }
+    // Left
+    if input.pressed(KeyCode::A) { transform.translation.x -= movement; }
+    // Right
+    if input.pressed(KeyCode::D) { transform.translation.x += movement; }
 }
