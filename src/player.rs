@@ -1,17 +1,19 @@
+//! Everything associated with the player.
+
 use bevy::prelude::*;
 use bevy_inspector_egui::Inspectable;
 use crate::{
-    AsciiSheet,
-    TILE_SIZE,
+    texture_handle::*,
+    attributes::*,
 };
 
 
+/// The plugin of this module -- systems, entities, components, resources....
 pub struct PlayerPlugin;
 
 #[derive(Component, Inspectable)]
-pub struct Player {
-    speed: f32
-}
+/// The player component
+pub struct Player;
 
 impl Plugin for PlayerPlugin {
     fn build(&self, app: &mut App) {
@@ -20,60 +22,60 @@ impl Plugin for PlayerPlugin {
     }
 }
 
-fn player_movement(
-    mut player_query: Query<(&Player, &mut Transform)>,
-    keyboard: Res<Input<KeyCode>>,
-    time: Res<Time>
-) {
-    let (player, mut transform) = player_query.single_mut();
+/// Spawn the player entity
+fn spawn_player(mut commands: Commands, texture_atlas: Res<Cp437>) {
+    // XXX: Fix these
+    //   * Sprite index is fixed
+    //   * Sprite color is fixed
+    //   * Transformation is fixed (not based on resolution)
+    //   * The `z` coordinate should be >0.0 so that the sprite doesn't overlap
+    //     with others -- the player entity is the most important
 
-    if keyboard.pressed(KeyCode::W) {
-        transform.translation.y += player.speed * time.delta_seconds();
-    }
-    if keyboard.pressed(KeyCode::S) {
-        transform.translation.y -= player.speed * time.delta_seconds();
-    }
-    if keyboard.pressed(KeyCode::D) {
-        transform.translation.x += player.speed * time.delta_seconds();
-    }
-    if keyboard.pressed(KeyCode::A) {
-        transform.translation.x -= player.speed * time.delta_seconds();
-    }
-}
+    // Get the player sprite
+    let mut sprite = TextureAtlasSprite::new(2);
+    sprite.color       = Color::rgb_u8(150, 70, 170);
+    sprite.custom_size = Some(Vec2::splat(100.));
 
-fn spawn_player(mut commands: Commands, ascii: Res<AsciiSheet>) {
-    let mut sprite = TextureAtlasSprite::new(1);
-    sprite.color = Color::rgb(0.3 ,0.3 ,0.9 );
-    sprite.custom_size = Some(Vec2::splat(TILE_SIZE));
-
-    let player = commands.spawn_bundle(SpriteSheetBundle {
-        sprite: sprite,
-        texture_atlas: ascii.0.clone(),
-        transform: Transform {
-            translation: Vec3::new(0.0, 0.0, 900.0),
-            ..Default::default()
-        },
-        ..Default::default()
-    }).insert(Name::new("Player"))
-    .insert(Player {
-        speed: 3.
-    })
-    .id();
-
-    let mut background_sprite = TextureAtlasSprite::new(0);
-    background_sprite.color = Color::rgb(0.5, 0.5, 0.5);
-    background_sprite.custom_size = Some(Vec2::splat(TILE_SIZE));
-
-    let background = commands.spawn_bundle(SpriteSheetBundle {
-            sprite: background_sprite,
-            texture_atlas: ascii.0.clone(),
+    // Spawn the player entity
+    let player =
+        commands.spawn_bundle(SpriteSheetBundle {
+            sprite,
+            texture_atlas: texture_atlas.0.clone(),
             transform: Transform {
-                translation: Vec3::new(0.0, 0.0, -1.0),
+                translation: Vec3::new(0., 0., 0.,),
                 ..Default::default()
             },
             ..Default::default()
         })
-        .insert(Name::new("Background"))
+        .insert(Name::new("Player"))
+        .insert(Player)
+        .insert(MovementSpeed::from_vec(Vec2::splat(100.)))
         .id();
-    commands.entity(player).push_children(&[background]);
+
+    // Push it into commands
+    commands.entity(player);
+}
+
+/// System that handle's the player's movement
+fn player_movement(
+    mut player: Query<(&Player, &mut Transform, &MovementSpeed)>,
+    input: Res<Input<KeyCode>>,
+    time: Res<Time>
+) {
+    // Get the player entity and its `transform`
+    let (_, mut transform, speed) = player.single_mut();
+
+    // XXX:
+    //   * Input settings are fixed -> WASD
+    let movement_x = speed.x * time.delta_seconds();
+    let movement_y = speed.y * time.delta_seconds();
+
+    // Up
+    if input.pressed(KeyCode::W) { transform.translation.y += movement_y; }
+    // Down
+    if input.pressed(KeyCode::S) { transform.translation.y -= movement_y; }
+    // Left
+    if input.pressed(KeyCode::A) { transform.translation.x -= movement_x; }
+    // Right
+    if input.pressed(KeyCode::D) { transform.translation.x += movement_x; }
 }

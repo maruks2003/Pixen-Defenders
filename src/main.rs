@@ -1,76 +1,64 @@
 use bevy::{
     prelude::*,
-    render::camera::ScalingMode
+};
+use pixen_defenders::{
+    constants::*,
+    texture_handle::*,
+    player::*,
+    debug::*,
 };
 
 
-mod player;
-mod debug;
-mod grid;
-
-use player::PlayerPlugin;
-use debug::DebugPlugin;
-
-pub const CLEAR: Color = Color::rgb(0.1, 0.1, 0.1);
-pub const RESOLUTION: f32 = 16.0 / 9.0;
-pub const TILE_SIZE: f32 = 0.1;
 
 fn main() {
-    let height = 900.0;
     App::new()
-        .insert_resource(ClearColor(CLEAR))
-        .insert_resource(WindowDescriptor {
-            width: height*RESOLUTION,
-            height: height,
-            title: "Pixen defenders".to_string(),
-            vsync: true,
-            resizable: false,
+        // Set the clear background color
+        .insert_resource(ClearColor(CLEAR_COLOR))
 
+        // Window settings
+        // XXX: Fix these
+        //   * Fixed resolution
+        //   * Vsync always on
+        // TODO: Add some more settings
+        .insert_resource(WindowDescriptor {
+            width:     1920.,
+            height:    1080.,
+            title:     GAME_TITLE.to_string(),
+            vsync:     true,
+            resizable: false,
             ..Default::default()
         })
 
-        .add_plugins(DefaultPlugins)
-        .add_startup_system(spawn_camera)
+        // Set up the game. This has to be done `PreStartup` because we have to
+        // load the resources before other plugins start using them
+        .add_startup_system_to_stage(StartupStage::PreStartup, setup)
+
+        // Spawn the player
         .add_plugin(PlayerPlugin)
+
+        // Default plugins..
+        .add_plugins(DefaultPlugins)
+
+        // Debug egui
         .add_plugin(DebugPlugin)
-        .add_startup_system_to_stage(StartupStage::PreStartup, load_assets)
+
+        // Run the game
         .run();
-
 }
 
-
-
-fn spawn_camera(mut commands: Commands) {
-    let mut camera = OrthographicCameraBundle::new_2d();
-
-    camera.orthographic_projection.top = 1.0;
-    camera.orthographic_projection.bottom = -1.0;
-
-    camera.orthographic_projection.right = 1.0 * RESOLUTION;
-    camera.orthographic_projection.left = -1.0 * RESOLUTION;
-
-    camera.orthographic_projection.scaling_mode = ScalingMode::None;
-
-    commands.spawn_bundle(camera);
-}
-
-struct AsciiSheet(Handle<TextureAtlas>);
-
-fn load_assets(
+/// Game setup -- spawn the camera, load the assets... :^)
+fn setup(
     mut commands: Commands,
     assets: Res<AssetServer>,
-    mut texture_atlases: ResMut<Assets<TextureAtlas>>
-) {
-    let image = assets.load("code_page.png");
+    mut atlases: ResMut<Assets<TextureAtlas>>
+ ) {
+    // Spawn the camera
+    commands.spawn_bundle(OrthographicCameraBundle::new_2d());
+
+    // Load the CP437 asset, parse it and insert it into commands as a resource
+    let cp437 = assets.load("code_page.png");
     let atlas = TextureAtlas::from_grid_with_padding(
-        image,
-        Vec2::splat(9.),
-        16,
-        16,
-        Vec2::splat(2.)
+        cp437, Vec2::splat(9.), 16, 16, Vec2::splat(2.)
     );
-
-    let atlas_handle = texture_atlases.add(atlas);
-
-    commands.insert_resource(AsciiSheet(atlas_handle));
+    commands.insert_resource(Cp437(atlases.add(atlas)));
 }
