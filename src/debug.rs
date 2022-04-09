@@ -1,9 +1,10 @@
+//! Bevy inspector egui plugin
+
 use bevy::prelude::*;
 use bevy_inspector_egui::{
     WorldInspectorPlugin,
     RegisterInspectable,
 };
-
 use crate::player::Player;
 
 pub struct DebugPlugin;

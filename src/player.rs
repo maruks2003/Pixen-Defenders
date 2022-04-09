@@ -1,13 +1,14 @@
 //! Everything associated with the player.
 
 use bevy::prelude::*;
+use bevy_inspector_egui::Inspectable;
 use crate::texture_handle::*;
 
 
 /// The plugin of this module -- systems, entities, components, resources....
 pub struct PlayerPlugin;
 
-#[derive(Component)]
+#[derive(Component, Inspectable)]
 /// The player component
 pub struct Player;
 

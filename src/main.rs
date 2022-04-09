@@ -5,6 +5,7 @@ use pixen_defenders::{
     constants::*,
     texture_handle::*,
     player::*,
+    debug::*,
 };
 
 
@@ -37,6 +38,9 @@ fn main() {
 
         // Default plugins..
         .add_plugins(DefaultPlugins)
+
+        // Debug egui
+        .add_plugin(DebugPlugin)
 
         // Run the game
         .run();
