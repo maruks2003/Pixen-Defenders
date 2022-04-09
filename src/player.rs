@@ -23,7 +23,7 @@ impl Plugin for PlayerPlugin {
 }
 
 /// Spawn the player entity
-fn spawn_player(mut commands: Commands, texture_atlas: Res<PlaceholderPlayer>) {
+fn spawn_player(mut commands: Commands, texture_atlas: Res<Cp437>) {
     // XXX: Fix these
     //   * Sprite index is fixed
     //   * Sprite color is fixed
@@ -32,8 +32,8 @@ fn spawn_player(mut commands: Commands, texture_atlas: Res<PlaceholderPlayer>) {
     //     with others -- the player entity is the most important
 
     // Get the player sprite
-    let mut sprite = TextureAtlasSprite::new(0);
-    sprite.color       = Color::rgb(1., 1., 1.);
+    let mut sprite = TextureAtlasSprite::new(2);
+    sprite.color       = Color::rgb_u8(150, 70, 170);
     sprite.custom_size = Some(Vec2::splat(100.));
 
     // Spawn the player entity

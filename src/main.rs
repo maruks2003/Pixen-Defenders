@@ -61,13 +61,4 @@ fn setup(
         cp437, Vec2::splat(9.), 16, 16, Vec2::splat(2.)
     );
     commands.insert_resource(Cp437(atlases.add(atlas)));
-
-
-    // Load the placeholder player sprite, parse it, make it a resource...
-    // TODO: Maybe there's a better way to load a single sprite?
-    let player_sprite = assets.load("placeholder.png");
-    let atlas = TextureAtlas::from_grid(
-        player_sprite, Vec2::splat(32.), 1, 1
-    );
-    commands.insert_resource(PlaceholderPlayer(atlases.add(atlas)));
 }
