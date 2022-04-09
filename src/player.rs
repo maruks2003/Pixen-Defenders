@@ -2,7 +2,10 @@
 
 use bevy::prelude::*;
 use bevy_inspector_egui::Inspectable;
-use crate::texture_handle::*;
+use crate::{
+    texture_handle::*,
+    attributes::*,
+};
 
 
 /// The plugin of this module -- systems, entities, components, resources....
@@ -46,6 +49,7 @@ fn spawn_player(mut commands: Commands, texture_atlas: Res<PlaceholderPlayer>) {
         })
         .insert(Name::new("Player"))
         .insert(Player)
+        .insert(MovementSpeed::from_vec(Vec2::splat(100.)))
         .id();
 
     // Push it into commands
@@ -54,24 +58,24 @@ fn spawn_player(mut commands: Commands, texture_atlas: Res<PlaceholderPlayer>) {
 
 /// System that handle's the player's movement
 fn player_movement(
-    mut player: Query<(&Player, &mut Transform)>,
+    mut player: Query<(&Player, &mut Transform, &MovementSpeed)>,
     input: Res<Input<KeyCode>>,
     time: Res<Time>
 ) {
     // Get the player entity and its `transform`
-    let (_, mut transform) = player.single_mut();
+    let (_, mut transform, speed) = player.single_mut();
 
     // XXX:
     //   * Input settings are fixed -> WASD
-    //   * Movement is fixed and not based on anything
-    let movement = 100. * time.delta_seconds();
+    let movement_x = speed.x * time.delta_seconds();
+    let movement_y = speed.y * time.delta_seconds();
 
     // Up
-    if input.pressed(KeyCode::W) { transform.translation.y += movement; }
+    if input.pressed(KeyCode::W) { transform.translation.y += movement_y; }
     // Down
-    if input.pressed(KeyCode::S) { transform.translation.y -= movement; }
+    if input.pressed(KeyCode::S) { transform.translation.y -= movement_y; }
     // Left
-    if input.pressed(KeyCode::A) { transform.translation.x -= movement; }
+    if input.pressed(KeyCode::A) { transform.translation.x -= movement_x; }
     // Right
-    if input.pressed(KeyCode::D) { transform.translation.x += movement; }
+    if input.pressed(KeyCode::D) { transform.translation.x += movement_x; }
 }
