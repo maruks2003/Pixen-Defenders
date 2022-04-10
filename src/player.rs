@@ -57,7 +57,7 @@ fn spawn_player(mut commands: Commands, texture_atlas: Res<Cp437>) {
     commands.entity(player);
 }
 
-/// System that handle's the player's movement
+/// System that handles the player's movement
 fn player_movement(
     mut player: Query<(&Player, &mut Transform, &MovementSpeed)>,
     input: Res<Input<KeyCode>>,
