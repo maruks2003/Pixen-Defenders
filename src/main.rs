@@ -5,6 +5,7 @@ use pixen_defenders::{
     constants::*,
     texture_handle::*,
     player::*,
+    tiles::*,
     debug::*,
 };
 
@@ -36,6 +37,9 @@ fn main() {
         // Spawn the player
         .add_plugin(PlayerPlugin)
 
+        // Spawn the tiles
+        .add_plugin(TilesPlugin)
+
         // Default plugins..
         .add_plugins(DefaultPlugins)
 
@@ -61,4 +65,11 @@ fn setup(
         cp437, Vec2::splat(9.), 16, 16, Vec2::splat(2.)
     );
     commands.insert_resource(Cp437(atlases.add(atlas)));
+
+    // Load the temporary wall tileset
+    let wall_tileset = assets.load("pixen_defenders.png");
+    let atlas = TextureAtlas::from_grid(
+        wall_tileset, Vec2::splat(16.), 3, 3
+    );
+    commands.insert_resource(WallTileset(atlases.add(atlas)));
 }

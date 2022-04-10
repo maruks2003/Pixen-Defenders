@@ -29,3 +29,11 @@ impl std::ops::Deref for MovementSpeed {
         &self.mov_vec
     }
 }
+
+
+#[derive(Component, Inspectable)]
+/// The component for type of the tile
+pub enum TileType {
+    Wall,
+    Floor,
+}

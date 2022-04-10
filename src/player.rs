@@ -43,7 +43,7 @@ fn spawn_player(mut commands: Commands, texture_atlas: Res<Cp437>) {
             sprite,
             texture_atlas: texture_atlas.0.clone(),
             transform: Transform {
-                translation: Vec3::new(0., 0., 1.,),
+                translation: Vec3::new(0., 0., 1.),
                 ..Default::default()
             },
             ..Default::default()
@@ -92,5 +92,6 @@ fn camera_on_player(
     let player_translation = transforms.q0().single().translation;
     let mut camera_transform = transforms.q1();
     let mut camera_transform = camera_transform.single_mut();
-    camera_transform.translation = player_translation;
+    camera_transform.translation.x = player_translation.x;
+    camera_transform.translation.y = player_translation.y;
 }
