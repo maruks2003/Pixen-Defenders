@@ -12,4 +12,4 @@ Coding stuff
 - enemy spawning behaviour
 - enemy pathfinding
 - tower behaviour
-- 
+- create global settings for the game

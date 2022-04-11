@@ -5,6 +5,7 @@ use bevy_inspector_egui::Inspectable;
 use crate::{
     texture_handle::*,
     attributes::*,
+    constants::TILE_SIZE,
 };
 
 
@@ -35,7 +36,7 @@ fn spawn_player(mut commands: Commands, texture_atlas: Res<Cp437>) {
     // Get the player sprite
     let mut sprite = TextureAtlasSprite::new(2);
     sprite.color       = Color::rgb_u8(150, 70, 170);
-    sprite.custom_size = Some(Vec2::splat(100.));
+    sprite.custom_size = Some(Vec2::splat(TILE_SIZE));
 
     // Spawn the player entity
     let player =
@@ -43,7 +44,7 @@ fn spawn_player(mut commands: Commands, texture_atlas: Res<Cp437>) {
             sprite,
             texture_atlas: texture_atlas.0.clone(),
             transform: Transform {
-                translation: Vec3::new(0., 0., 1.),
+                translation: Vec3::new(0., 0., 100.),
                 ..Default::default()
             },
             ..Default::default()
