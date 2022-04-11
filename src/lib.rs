@@ -4,3 +4,4 @@ pub mod texture_handle;
 pub mod debug;
 pub mod attributes;
 pub mod tiles;
+pub mod settings;

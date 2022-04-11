@@ -5,7 +5,7 @@ use bevy_inspector_egui::Inspectable;
 use crate::{
     texture_handle::*,
     attributes::*,
-    constants::TILE_SIZE,
+    settings::*,
 };
 
 
@@ -25,7 +25,11 @@ impl Plugin for PlayerPlugin {
 }
 
 /// Spawn the player entity
-fn spawn_player(mut commands: Commands, texture_atlas: Res<Cp437>) {
+fn spawn_player(
+    mut commands: Commands,
+    texture_atlas: Res<Cp437>,
+    settings: Res<GameSettings>,
+) {
     // XXX: Fix these
     //   * Sprite index is fixed
     //   * Sprite color is fixed
@@ -36,7 +40,7 @@ fn spawn_player(mut commands: Commands, texture_atlas: Res<Cp437>) {
     // Get the player sprite
     let mut sprite = TextureAtlasSprite::new(2);
     sprite.color       = Color::rgb_u8(150, 70, 170);
-    sprite.custom_size = Some(Vec2::splat(TILE_SIZE));
+    sprite.custom_size = Some(Vec2::splat(settings.tile_size));
 
     // Spawn the player entity
     let player =
